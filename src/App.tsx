@@ -8,21 +8,62 @@ import { CreateContentsInput } from './API';
 import "@aws-amplify/ui-react/styles.css"
 import {
   withAuthenticator,
-  Button,
-  Heading,
-  Image,
+  Grid,
   View,
-  Card
+  Menu,
+  MenuItem,
+  Heading,
+  Card,
+  Flex,
+  TextField,
+  Button,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  Theme,
+  ThemeProvider,
+  TextAreaField,
+  Link
 } from "@aws-amplify/ui-react";
-import { delimiter } from 'path';
+// import { delimiter } from 'path';
 
 const initialFormState = {
   author: '',
   text: ''
 }
 
-function App({ signOut }: any) {
+const theme: Theme = {
+  name: 'table-theme',
+  tokens: {
+    components: {
+      table: {
+        row: {
+          hover: {
+            backgroundColor: { value: '{colors.blue.20}' },
+          },
 
+          striped: {
+            backgroundColor: { value: '{colors.blue.10}' },
+          },
+        },
+
+        header: {
+          color: { value: '{colors.blue.80}' },
+          fontSize: { value: '{fontSizes.large}' },
+        },
+
+        data: {
+          fontWeight: { value: '{fontWeights.semibold}' },
+        },
+      },
+    },
+  },
+};
+
+
+function App({ signOut }: any) {
   const [contents, setContents] = useState<CreateContentsInput[]>([])
   const [formData, setFormData] = useState(initialFormState)
   useEffect(() => {
@@ -50,41 +91,91 @@ function App({ signOut }: any) {
   }
 
   return (
-    <View className="App">
-      <h1>Contents</h1>
-      <input
-        onChange={e => setFormData({
-          ...formData,
-          'author': e.target.value
-        })}
-        placeholder="Author"
-        value={formData.author}></input>
-      <textarea
-        onChange={e => setFormData({
-          ...formData,
-          'text': e.target.value
-        })}
-        placeholder="Text"
-        value={formData.text}></textarea>
+    <ThemeProvider theme={theme} colorMode="light">
+      <View className="App" width="100%" padding={{ base: 0, large: '1rem' }}>
+        <Grid
+          // columnGap="0.5rem"
+          // rowGap="0.5rem"
+          templateColumns="1fr 1fr 1fr"
+          templateRows="1fr 3fr 1fr"
+        >
+          <Card
+            columnStart="1"
+            columnEnd="-1"
+          >
+            <Menu menuAlign="start">
+              <MenuItem onClick={signOut}>
+                Sign Out
+              </MenuItem>
+            </Menu>
 
-      <button onClick={createContents}>save</button>
-
-      <div style={{ marginBottom: 30 }}>
-        { contents.map((content) => {
-          return <div key={content.id || content.author}>
-          <h2>{content.author}</h2>
-          <p>{content.text}</p>
-          <button onClick={() => deleteContent(content) }>Delete content</button>
-        </div>
-        }) }
-      </div>
-
-      {/* <Card>
-        <Image src={logo} className="App-logo" alt="logo" />
-        <Heading level={1}>We now have Auth!</Heading>
-      </Card>
-      <Button onClick={signOut}>Sign Out</Button> */}
-    </View>
+            <Heading level={2}>浜松市イベントBot</Heading>
+          </Card>
+          <Card columnStart="1" columnEnd="2">
+            <Card>
+              <Flex as="form" direction="column">
+                <View padding="0.5rem">
+                  <TextField
+                    label="登録者"
+                    errorMessage="登録者名は必須です"
+                    onChange={e => setFormData({
+                      ...formData,
+                      'author': e.target.value
+                    })}
+                    value={formData.author}
+                    isRequired={true} />
+                </View>
+                <View padding="0.5rem">
+                  <TextAreaField
+                    label="ツイートテキスト"
+                    onChange={e => setFormData({
+                      ...formData,
+                      'text': e.target.value
+                    })}
+                    value={formData.text}
+                    isRequired={true} />
+                </View>
+                <View padding="0.5rem">
+                  <Button type="submit" onClick={createContents} variation="primary">save</Button>
+                </View>
+              </Flex>
+            </Card>
+          </Card>
+          <Card columnStart="2" columnEnd="-1" >
+            <Table
+              caption=""
+              highlightOnHover={true}
+              variation="striped">
+              <TableHead>
+                <TableRow>
+                  <TableCell as="th">Author</TableCell>
+                  <TableCell as="th">Text</TableCell>
+                  <TableCell as="th"></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                { contents.map((content) => {
+                  return (
+                    <TableRow key={content.id || content.author}>
+                      <TableCell>{ content.author }</TableCell>
+                      <TableCell>{ content.text }</TableCell>
+                      <TableCell>
+                        <Button onClick={() => deleteContent(content) } variation="destructive">Delete</Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                }) }
+              </TableBody>
+            </Table>
+          </Card>
+          <Card columnStart="1" columnEnd="-1">
+            <Link href="https://github.com/jacoyutorius/hamamatsu-event-notifier-contents" color="#007EB9" isExternal={true}>
+              Github
+            </Link>
+          </Card>
+        </Grid>
+      </View>
+    </ThemeProvider>
   );
 }
 

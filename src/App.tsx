@@ -27,7 +27,7 @@ import {
   TextAreaField,
   Link
 } from "@aws-amplify/ui-react";
-// import { delimiter } from 'path';
+import { Auth } from 'aws-amplify';
 
 const initialFormState = {
   author: '',
@@ -66,9 +66,21 @@ const theme: Theme = {
 function App({ signOut }: any) {
   const [contents, setContents] = useState<CreateContentsInput[]>([])
   const [formData, setFormData] = useState(initialFormState)
+  const [user, setUser] = useState<any>([])
+
   useEffect(() => {
     fetchContents()
   })
+
+  useEffect(() => {
+    fetchCurrentAuthenticatedUser()
+  }, [])
+
+  async function fetchCurrentAuthenticatedUser() {
+    const { attributes }: any = await Auth.currentAuthenticatedUser();
+    setUser(attributes)
+    setFormData({...initialFormState, author: attributes.email})
+  }
 
   async function fetchContents() {
     const apiData: any = await API.graphql({query: listContents})
@@ -94,8 +106,6 @@ function App({ signOut }: any) {
     <ThemeProvider theme={theme} colorMode="light">
       <View className="App" width="100%" padding={{ base: 0, large: '1rem' }}>
         <Grid
-          // columnGap="0.5rem"
-          // rowGap="0.5rem"
           templateColumns="1fr 1fr 1fr"
           templateRows="1fr 3fr 1fr"
         >
@@ -117,17 +127,19 @@ function App({ signOut }: any) {
                 <View padding="0.5rem">
                   <TextField
                     label="登録者"
-                    errorMessage="登録者名は必須です"
+                    descriptiveText="登録者はログインEmailとなります"
                     onChange={e => setFormData({
                       ...formData,
                       'author': e.target.value
                     })}
                     value={formData.author}
+                    isReadOnly={true} 
                     isRequired={true} />
                 </View>
                 <View padding="0.5rem">
                   <TextAreaField
                     label="ツイートテキスト"
+                    errorMessage="ツイートテキストは必須です"
                     onChange={e => setFormData({
                       ...formData,
                       'text': e.target.value

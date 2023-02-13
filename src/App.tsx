@@ -113,12 +113,11 @@ function App({ signOut }: any) {
             columnStart="1"
             columnEnd="-1"
           >
-            <Menu menuAlign="start">
+            <Menu triggerClassName="menu" menuAlign="start">
               <MenuItem onClick={signOut}>
                 Sign Out
               </MenuItem>
             </Menu>
-
             <Heading level={2}>浜松市イベントBot</Heading>
           </Card>
           <Card columnStart="1" columnEnd="2">
@@ -180,12 +179,12 @@ function App({ signOut }: any) {
               </TableBody>
             </Table>
           </Card>
-          <Card columnStart="1" columnEnd="-1">
-            <Link href="https://github.com/jacoyutorius/hamamatsu-event-notifier-contents" color="#007EB9" isExternal={true}>
-              Github
-            </Link>
-          </Card>
         </Grid>
+      </View>
+      <View className="footer">
+        <Link href="https://github.com/jacoyutorius/hamamatsu-event-notifier-contents" color="#007EB9" isExternal={true}>
+          Github
+        </Link>
       </View>
     </ThemeProvider>
   );

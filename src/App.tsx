@@ -155,8 +155,7 @@ function App({ signOut }: any) {
           <Card columnStart="2" columnEnd="-1" >
             <Table
               caption=""
-              highlightOnHover={true}
-              variation="striped">
+              highlightOnHover={true}>
               <TableHead>
                 <TableRow>
                   <TableCell as="th">Author</TableCell>
@@ -171,7 +170,7 @@ function App({ signOut }: any) {
                       <TableCell>{ content.author }</TableCell>
                       <TableCell>{ content.text }</TableCell>
                       <TableCell>
-                        <Button onClick={() => deleteContent(content) } variation="destructive">Delete</Button>
+                        <Button onClick={() => deleteContent(content) } variation="destructive" size="small">Delete</Button>
                       </TableCell>
                     </TableRow>
                   )
